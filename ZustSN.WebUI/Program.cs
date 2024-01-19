@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZustSN.Entities;
-using ZustSN.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +9,7 @@ builder.Services.AddControllersWithViews();
 var connection = builder.Configuration.GetConnectionString("myconn");
 builder.Services.AddDbContext<ZustIdentityDBContext>(options =>
 {
-    options.UseSqlServer(connection, b => b.MigrationsAssembly("ZustASP.Entities"));
+    options.UseSqlServer(connection, b => b.MigrationsAssembly("ZustSN.Entities"));
 });
 
 var app = builder.Build();

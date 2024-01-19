@@ -14,5 +14,16 @@ namespace ZustSN.Entities
         public bool IsOnline { get; set; }
         public DateTime DisconnectTime { get; set; } = DateTime.Now;
         public string ConnectTime { get; set; } = "";
+        public string? ImageUrl { get; set; }
+        public bool HasRequestPending { get; set; }
+        public virtual ICollection<Chat>? Chats { get; set; }
+        public List<Friend>? Friends { get; set; } = new List<Friend>();
+        public List<FriendRequest> FriendRequests { get; set; } = new List<FriendRequest>();
+        public List<Message> Messages { get; set; } = new List<Message>();
+        public List<Post>? Posts { get; set; }
+        public ZustIdentityUser()
+        {
+        }
+
     }
 }

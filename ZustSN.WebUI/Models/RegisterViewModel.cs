@@ -14,5 +14,7 @@ namespace ZustSN.WebUI.Models
         public string? Password { get; set; }       
         [Display(Name = "I accept the privacy policy")]
         public bool AcceptPrivacy { get; set; }
+        public IFormFile? File { get; set; }
+        public string? ImageUrl { get; set; } = "user-1.jpg";
     }
 }

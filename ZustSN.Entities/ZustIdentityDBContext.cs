@@ -14,18 +14,17 @@ namespace ZustSN.Entities
             : base(options)
         {
         }
-        public DbSet<Post>? Posts { get; set; }
+        public DbSet<Chat>? Chats { get; set; }
         public DbSet<Friend>? Friends { get; set; }
         public DbSet<FriendRequest>? FriendRequests { get; set; }
-        public DbSet<Chat>? Chats { get; set; }
         public DbSet<Message>? Messages { get; set; }
+        public DbSet<Post>? Posts { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Friend>().HasKey(f => f.Id); // Define 'Id' as primary key for Friend entity
-            // Other configurations...
+            modelBuilder.Entity<Friend>().HasKey(f => f.Id); 
         }
     }
 }

@@ -29,6 +29,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.25" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.25">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -36,8 +40,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Message\" />
-    <Folder Include="Views\Profile\" />
+    <None Include="wwwroot\assets\css\responsive.css.map" />
+    <None Include="wwwroot\assets\css\responsive.scss" />
+    <None Include="wwwroot\assets\css\style.css.map" />
+    <None Include="wwwroot\assets\css\style.scss" />
+    <None Include="wwwroot\assets\fonts\._boxicons.svg" />
+    <None Include="wwwroot\assets\fonts\._boxicons.woff2" />
+    <None Include="wwwroot\assets\fonts\flaticon.svg" />
+    <None Include="wwwroot\assets\fonts\flaticon.woff2" />
+    <None Include="wwwroot\assets\fonts\remixicon.less" />
+    <None Include="wwwroot\assets\fonts\remixicon.woff2" />
+    <None Include="wwwroot\assets\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\assets\js\chat.js" />
+    <None Include="wwwroot\assets\js\jquery-ui.min.js" />
+    <None Include="wwwroot\assets\js\jquery.magnific-popup.min.js" />
+    <None Include="wwwroot\assets\js\jquery.min.js" />
+    <None Include="wwwroot\assets\js\main.js" />
+    <None Include="wwwroot\assets\js\metismenu.min.js" />
+    <None Include="wwwroot\assets\js\owl.carousel.min.js" />
+    <None Include="wwwroot\assets\js\selectize.min.js" />
+    <None Include="wwwroot\assets\js\signalr\dist\browser\signalr.js" />
+    <None Include="wwwroot\assets\js\signalr\dist\browser\signalr.min.js" />
+    <None Include="wwwroot\assets\js\simplebar.min.js" />
+    <None Include="wwwroot\assets\js\site.js" />
+    <None Include="wwwroot\assets\js\wow.min.js" />
   </ItemGroup>
 
 </Project>

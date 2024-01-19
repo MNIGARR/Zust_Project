@@ -1,39 +1,43 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿
+
+<!Doctype html>
+<html lang="zxx">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ZustSN.WebUI</title>
-    @* <link rel="stylesheet" href="/dist/css/bootstrap.min.css" /> *@
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/animate.min.css">
-    <link rel="stylesheet" href="/assets/css/remixicon.css">
-    <link rel="stylesheet" href="/assets/css/flaticon.css">
-    <link rel="stylesheet" href="/assets/css/jquery-ui.min.css">
-    <link rel="stylesheet" href="/assets/css/magnific-popup.min.css">
-    <link rel="stylesheet" href="/assets/css/simplebar.min.css">
-    <link rel="stylesheet" href="/assets/css/metismenu.min.css">
-    <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/responsive.css">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Links of CSS files -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/animate.min.css">
+    <link rel="stylesheet" href="~/assets/css/remixicon.css">
+    <link rel="stylesheet" href="~/assets/css/flaticon.css">
+    <link rel="stylesheet" href="~/assets/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="~/assets/css/magnific-popup.min.css">
+    <link rel="stylesheet" href="~/assets/css/simplebar.min.css">
+    <link rel="stylesheet" href="~/assets/css/metismenu.min.css">
+    <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <title>Zust - Social Community & Marketplace HTML Template</title>
+    <link href="~/assets/css/collection.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="~/assets/images/favicon.png">
+    <script src="~/assets/js/site.js"></script>
 </head>
 <body>
-    <!-- Start Preloader Area -->
-    <div class="preloader-area">
-        <div class="spinner">
-            <div class="inner">
-                <div class="disc"></div>A
-                <div class="disc"></div>
-                <div class="disc"></div>
-            </div>
-        </div>
-    </div>
-    <!-- End Preloader Area -->
-
     <div class="main-content-wrapper d-flex flex-column">
 
+        <!-- Start Preloader Area -->
+        <div class="preloader-area">
+            <div class="spinner">
+                <div class="inner">
+                    <div class="disc"></div>
+                    <div class="disc"></div>
+                    <div class="disc"></div>
+                </div>
+            </div>
+        </div>
         <!-- Start Navbar Area -->
         <div class="navbar-area">
             <div class="main-responsive-nav">
@@ -48,7 +52,7 @@
 
             <div class="main-navbar">
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <a asp-controller="home" asp-action="index" class="navbar-brand d-flex align-items-center">
+                    <a href="@Url.Action("Index", "Home")" class="navbar-brand d-flex align-items-center">
                         <img src="~/assets/images/logo.png" alt="image">
                     </a>
 
@@ -68,7 +72,7 @@
 
                         <div class="others-options d-flex align-items-center">
                             <div class="option-item">
-                                <a asp-controller="home" asp-action="index" class="home-btn"><i class="flaticon-home"></i></a>
+                                <a href="@Url.Action("Index", "Home")" class="home-btn"><i class="flaticon-home"></i></a>
                             </div>
                             <div class="option-item">
                                 <div class="dropdown friend-requests-nav-item">
@@ -223,7 +227,7 @@
                                                 </div>
                                             </div>
                                             <div class="view-all-requests-btn">
-                                                <a href="friends.html" class="default-btn">View All Requests</a>
+                                                <a href="@Url.Action("Friends", "Profile")" class="default-btn">View All Requests</a>
                                             </div>
                                         </div>
                                     </div>
@@ -323,7 +327,7 @@
                                                 </div>
                                             </div>
                                             <div class="view-all-messages-btn">
-                                                <a href="messages.html" class="default-btn">View All Messages</a>
+                                                <a href="@Url.Action("Message", "Message")" class="default-btn">View All Messages</a>
                                             </div>
                                         </div>
                                     </div>
@@ -405,7 +409,7 @@
                                                 </div>
                                             </div>
                                             <div class="view-all-notifications-btn">
-                                                <a href="notifications.html" class="default-btn">View All Notifications</a>
+                                                <a href="@Url.Action("Notifications", "Profile")" class="default-btn">View All Notifications</a>
                                             </div>
                                         </div>
                                     </div>
@@ -438,22 +442,22 @@
                                     <a href="#" class="dropdown-bs-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <div class="menu-profile">
                                             <img src="~/assets/images/user/user-1.jpg" class="rounded-circle" alt="image">
-                                            <span class="name">Matthew</span>
+                                            <span class="name">@ViewBag.User.Username</span>
                                             <span class="status-online"></span>
                                         </div>
                                     </a>
 
                                     <div class="dropdown-menu">
                                         <div class="profile-header">
-                                            <h3>Matthew Turner</h3>
-                                            <a href="mailto:matthew507@gmail.com">matthew507@gmail.com</a>
+                                            <h3>@ViewBag.User.Username</h3>
+                                            <a href="mailto:@ViewBag.User.Email">@ViewBag.User.Email</a>
                                         </div>
                                         <ul class="profile-body">
-                                            <li><i class="flaticon-user"></i> <a asp-controller="myprofile" asp-action="index">My Profile</a></li>
-                                            <li><i class="flaticon-settings"></i> <a asp-controller="setting" asp-action="index">Setting</a></li>
-                                            <li><i class="flaticon-privacy"></i> <a asp-controller="setting" asp-action="privacy">Privacy</a></li>
-                                            <li><i class="flaticon-information"></i> <a asp-controller="setting" asp-action="helpandsupport">Help & Support</a></li>
-                                            <li><i class="flaticon-logout"></i> <a asp-controller="account" asp-action="logout">Logout</a></li>
+                                            <li><i class="flaticon-user"></i> <a href="@Url.Action("MyProfile", "Profile")">My Profile</a></li>
+                                            <li><i class="flaticon-settings"></i> <a href="@Url.Action("Setting", "Profile")">Setting</a></li>
+                                            <li><i class="flaticon-privacy"></i> <a href="@Url.Action("Privacy", "Profile")">Privacy</a></li>
+                                            <li><i class="flaticon-information"></i> <a href="@Url.Action("HelpAndSupport", "Profile")">Help & Support</a></li>
+                                            <li><i class="flaticon-logout"></i> <a href="@Url.Action("LogOut", "Account")">Logout</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -477,7 +481,7 @@
                         <div class="option-inner">
                             <div class="others-options d-flex align-items-center">
                                 <div class="option-item">
-                                    <a asp-controller="home" asp-action="index" class="home-btn"><i class="flaticon-home"></i></a>
+                                    <a href="@Url.Action("Index", "Home")" class="home-btn"><i class="flaticon-home"></i></a>
                                 </div>
                                 <div class="option-item">
                                     <div class="dropdown friend-requests-nav-item">
@@ -564,7 +568,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="view-all-requests-btn">
-                                                    <a href="friends.html" class="default-btn">View All Requests</a>
+                                                    <a href="@Url.Action("Friends", "Index")" class="default-btn">View All Requests</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -628,7 +632,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="view-all-messages-btn">
-                                                    <a href="messages.html" class="default-btn">View All Messages</a>
+                                                    <a href="@Url.Action("Message", "Message")" class="default-btn">View All Messages</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -680,7 +684,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="view-all-notifications-btn">
-                                                    <a href="notifications.html" class="default-btn">View All Notifications</a>
+                                                    <a href="@Url.Action("Notifications", "Profile")" class="default-btn">View All Notifications</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -713,22 +717,22 @@
                                         <a href="#" class="dropdown-bs-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <div class="menu-profile">
                                                 <img src="~/assets/images/user/user-1.jpg" class="rounded-circle" alt="image">
-                                                <span class="name">Matthew</span>
+                                                <span class="name">ViewBag.User.Username</span>
                                                 <span class="status-online"></span>
                                             </div>
                                         </a>
 
                                         <div class="dropdown-menu">
                                             <div class="profile-header">
-                                                <h3>Matthew Turner</h3>
-                                                <a href="mailto:matthew507@gmail.com">matthew507@gmail.com</a>
+                                                <h3>ViewBag.User.Username</h3>
+                                                <a href="mailto:ViewBag.User.Email">ViewBag.User.Email</a>
                                             </div>
                                             <ul class="profile-body">
-                                                <li><i class="flaticon-user"></i> <a asp-controller="myprofile" asp-action="index">My Profile</a></li>
-                                                <li><i class="flaticon-settings"></i> <a href="setting.html">Setting</a></li>
-                                                <li><i class="flaticon-privacy"></i> <a href="privacy.html">Privacy</a></li>
-                                                <li><i class="flaticon-information"></i> <a href="help-and-support.html">Help & Support</a></li>
-                                                <li><i class="flaticon-logout"></i> <a asp-controller="home" asp-action="index">Logout</a></li>
+                                                <li><i class="flaticon-user"></i> <a href="@Url.Action("MyProfile", "Profile")">My Profile</a></li>
+                                                <li><i class="flaticon-settings"></i> <a href="@Url.Action("Setting", "Profile")">Setting</a></li>
+                                                <li><i class="flaticon-privacy"></i> <a href="@Url.Action("Privacy", "Profile")">Privacy</a></li>
+                                                <li><i class="flaticon-information"></i> <a href="@Url.Action("HelpAndSupport", "Profile")">Help & Support</a></li>
+                                                <li><i class="flaticon-logout"></i> <a href="@Url.Action("Index", "Home")">Logout</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -755,81 +759,115 @@
                 <span class="middle-bar"></span>
                 <span class="bottom-bar"></span>
             </div>
-            @{
-                var currentController = ViewContext.RouteData.Values["controller"]?.ToString().ToLower();
-            }
-
 
             <div class="sidemenu-body">
                 <ul class="sidemenu-nav metisMenu h-100" id="sidemenu-nav" data-simplebar>
-                    <li class="nav-item @(currentController == "home" ? "active" : "")">
-                        <a asp-controller="home" asp-action="index" class="nav-link">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="nav-link">
                             <span class="icon"><i class="flaticon-newspaper"></i></span>
                             <span class="menu-title">News Feed</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "notification" ? "active" : "")">
-                        <a asp-controller="notification" asp-action="index" class="nav-link">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Notifications", "Profile")" class="nav-link">
                             <span class="icon"><i class="flaticon-bell"></i></span>
                             <span class="menu-title">Notifications</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "messages"? "active" : "")">
-                        <a asp-controller="messages" asp-action="index" class="nav-link">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Message", "Message")" class="nav-link">
                             <span class="icon"><i class="flaticon-comment-1"></i></span>
                             <span class="menu-title">Messages</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "friends"? "active" : "")">
-                        <a asp-controller="friends" asp-action="index" class="nav-link">
+                    <li class="nav-item active">
+                        <a href="@Url.Action("Friends", "Profile")" class="nav-link">
                             <span class="icon"><i class="flaticon-friends"></i></span>
                             <span class="menu-title">Friends</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "events"? "active" : "")">
-                        <a asp-controller="events" asp-action="index" class="nav-link">
-                            <span class="icon"><i class="flaticon-calendar"></i></span>
-                            <span class="menu-title">Events</span>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Favorite", "Feed")" class="nav-link">
+                            <span class="icon"><i class="flaticon-star"></i></span>
+                            <span class="menu-title">Favorite</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "chat"? "active" : "")">
-                        <a asp-controller="chat" asp-action="index" class="nav-link">
+
+                    <li class="nav-item">
+                        <a href="@Url.Action("LiveChat", "Message")" class="nav-link">
                             <span class="icon"><i class="flaticon-live-chat"></i></span>
                             <span class="menu-title">Live Chat</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "video"? "active" : "")">
-                        <a asp-controller="Video" asp-action="index" class="nav-link">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Video", "Feed")" class="nav-link">
                             <span class="icon"><i class="flaticon-video"></i></span>
                             <span class="menu-title">Video</span>
                         </a>
                     </li>
-                    <li class="nav-item @(currentController == "Weather"? "active" : "")">
-                        <a asp-controller="Weather" asp-action="index" class="nav-link">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Weather", "Feed")" class="nav-link">
                             <span class="icon"><i class="flaticon-cloudy"></i></span>
                             <span class="menu-title">Weather</span>
                         </a>
                     </li>
-                    @*                     <li class="nav-item">
-                    <a asp-controller="account" asp-action="login" class="nav-link">
-                    <span class="icon"><i class="flaticon-user"></i></span>
-                    <span class="menu-title">Login</span>
-                    </a>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Login", "Account")" class="nav-link">
+                            <span class="icon"><i class="flaticon-user"></i></span>
+                            <span class="menu-title">Login</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                    <a asp-controller="account" asp-action="register" class="nav-link">
-                    <span class="icon"><i class="flaticon-information"></i></span>
-                    <span class="menu-title">Register</span>
-                    </a>
-                    </li> *@
+                        <a href="@Url.Action("Register", "Account")" class="nav-link">
+                            <span class="icon"><i class="flaticon-information"></i></span>
+                            <span class="menu-title">Register</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
         <!-- End Sidemenu Area -->
-        @RenderBody()
-
         <!-- Start Right Sidebar Area -->
         <div class="right-sidebar-area" data-simplebar>
+            <div class="recent-chat-box">
+                <div class="title">
+                    <h3>Recent Chat</h3>
+                </div>
+
+                <div class="chat-body" data-simplebar>
+                    <div class="chat-item">
+                        <a href="#"><img src="~/assets/images/user/user-15.jpg" class="rounded-circle" alt="image"></a>
+                        <span class="name"><a href="#">Stephan Redding</a></span>
+                        <span class="status-online"></span>
+                    </div>
+                    <div class="chat-item">
+                        <a href="#"><img src="~/assets/images/user/user-16.jpg" class="rounded-circle" alt="image"></a>
+                        <span class="name"><a href="#">Maria Smith</a></span>
+                        <span class="status-offline"></span>
+                    </div>
+                    <div class="chat-item">
+                        <a href="#"><img src="~/assets/images/user/user-17.jpg" class="rounded-circle" alt="image"></a>
+                        <span class="name"><a href="#">Paul Enlow</a></span>
+                        <span class="status-online"></span>
+                    </div>
+                    <div class="chat-item">
+                        <a href="#"><img src="~/assets/images/user/user-8.jpg" class="rounded-circle" alt="image"></a>
+                        <span class="name"><a href="#">Stephan Redding</a></span>
+                        <span class="status-offline"></span>
+                    </div>
+                    <div class="chat-item">
+                        <a href="#"><img src="~/assets/images/user/user-9.jpg" class="rounded-circle" alt="image"></a>
+                        <span class="name"><a href="#">Maria Smith</a></span>
+                        <span class="status-online"></span>
+                    </div>
+                    <div class="chat-item">
+                        <a href="#"><img src="~/assets/images/user/user-10.jpg" class="rounded-circle" alt="image"></a>
+                        <span class="name"><a href="#">Paul Enlow</a></span>
+                        <span class="status-offline"></span>
+                    </div>
+                </div>
+            </div>
+
             <div class="recent-contact-box">
                 <div class="title">
                     <h3>Contact</h3>
@@ -915,14 +953,9 @@
             </div>
         </div>
         <!-- End Right Sidebar Area -->
+        @RenderBody()
 
     </div>
-
-    @*     <div class="container">
-    <main role="main" class="pb-3">
-    </main>
-    </div> *@
-
     <!-- Start Copyright Area -->
     <div class="copyrights-area">
         <div class="container">
@@ -937,20 +970,21 @@
         <i class="ri-arrow-up-line"></i>
     </div>
     <!-- End Go Top Area -->
+    <!-- Links of JS files -->
+    <script src="~/assets/js/site.js"></script>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/assets/js/jquery-ui.min.js"></script>
+    <script src="~/assets/js/simplebar.min.js"></script>
+    <script src="~/assets/js/metismenu.min.js"></script>
+    <script src="~/assets/js/owl.carousel.min.js"></script>
+    <script src="~/assets/js/wow.min.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/assets/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/assets/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/assets/js/chat.js"></script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    @* <script src="~/assets/js/jquery.min.js"></script> *@
-    @* <script src="~/assets/js/bootstrap.bundle.min.js"></script> *@
-    <script src="/assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="/assets/js/jquery-ui.min.js"></script>
-    <script src="/assets/js/simplebar.min.js"></script>
-    <script src="/assets/js/metismenu.min.js"></script>
-    <script src="/assets/js/owl.carousel.min.js"></script>
-    <script src="/assets/js/wow.min.js"></script>
-    @* <script src="~/assets/js/main.js"></script> *@
-    <script src="/assets/js/main.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
