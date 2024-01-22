@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZustSN.Entities;
+using ZustSN.WebUI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,19 @@ builder.Services.AddDbContext<ZustIdentityDBContext>(options =>
     options.UseSqlServer(connection, b => b.MigrationsAssembly("ZustSN.Entities"));
 });
 
+
+builder.Services.AddIdentity<ZustIdentityUser, ZustIdentityRole>()
+    .AddEntityFrameworkStores<ZustIdentityDBContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IPasswordHasher<ZustIdentityUser>, PasswordHasher<ZustIdentityUser>>();
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,10 +41,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute("Default", "{controller=Account}/{action=Register}/{id?}");
+    endpoints.MapHub<ChatHub>("/chathub");
+});
 app.Run();
