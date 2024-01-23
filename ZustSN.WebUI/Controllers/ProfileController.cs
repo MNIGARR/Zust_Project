@@ -9,12 +9,12 @@ namespace ZustSN.WebUI.Controllers
     public class ProfileController : Controller
     {
         private UserManager<ZustIdentityUser> _userManager;
-        private ZustIdentityDBContext _dbContext;
+        private ZustIdentityDBContext _context;
 
-        public ProfileController(UserManager<ZustIdentityUser> userManager, ZustIdentityDBContext dbContext)
+        public ProfileController(UserManager<ZustIdentityUser> userManager, ZustIdentityDBContext context)
         {
             _userManager = userManager;
-            _dbContext = dbContext;
+            _context = context;
         }
 
         public async Task<IActionResult> MyProfile()
@@ -25,17 +25,17 @@ namespace ZustSN.WebUI.Controllers
                 ImageUrl = user.ImageUrl,
                 Username = user.UserName,
                 Email = user.Email
-
             };
             return View("MyProfile");
         }
-
+        
         public async Task<IActionResult> FriendRequests()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var friendrequsts = _dbContext.FriendRequests?
-                .Where(friend => friend.ReceiverId == user.Id && friend.Status == "Pending")
-                .Include(friend => friend.Sender)
+
+            var friendRequests = _context.FriendRequests?
+                .Where(fr => fr.ReceiverId == user.Id && fr.Status == "Pending")
+                .Include(fr => fr.Sender)
                 .ToList();
 
             ViewBag.User = new
@@ -43,49 +43,43 @@ namespace ZustSN.WebUI.Controllers
                 ImageUrl = user.ImageUrl,
                 Username = user.UserName,
                 Email = user.Email
-
             };
+            ViewBag.FriendRequests = friendRequests?.Select(fr => new
+            {
+                SenderName = fr.Sender?.UserName,
+                SenderEmail = fr.Sender?.Email,
+                SenderImage = fr.Sender?.ImageUrl
+            });
 
-            ViewBag.FriendRequsts = friendrequsts?
-                .Select(friend => new
-                {
-                    SenderName = friend.Sender?.UserName,
-                    SenderEmail = friend.Sender?.Email,
-                    SenderImageUrl = friend.Sender?.ImageUrl,
-
-                });
-            return RedirectToAction("Friend", "Profile");
+            return RedirectToAction("Friends", "Profile");
         }
-
-
-        public async Task<IActionResult> SendFriendRequst(string id)
+        public async Task<IActionResult> SendFriendRequest(string id)
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
-            var receiverUser = _userManager.Users.FirstOrDefault(user => user.Id == id);
+            var receiverUser = _userManager.Users.FirstOrDefault(u => u.Id == id);
             if (receiverUser != null)
             {
-                _dbContext.FriendRequests?.Add( new FriendRequest{
-                    SenderId= sender.Id,
+                _context.FriendRequests?.Add(new FriendRequest
+                {
+                    //Content = $"{sender.UserName} send friend request at {DateTime.Now.ToLongDateString()}",
+                    SenderId = sender.Id,
                     Sender = sender,
                     ReceiverId = id,
-                    Status="Pending"
+                    Status = "Pending"
+
                 });
                 receiverUser.HasRequestPending = true;
-                await _dbContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 await _userManager.UpdateAsync(receiverUser);
                 return Ok();
             }
             return BadRequest();
         }
-
-
-        public async Task<IActionResult> AcceptFollowRequest(string id)
+        public async Task<IActionResult> AcceptRequest(string id)
         {
             var receiver = await _userManager.GetUserAsync(HttpContext.User);
-            var sender = _userManager.Users.FirstOrDefault(user => user.Id == id);
-            var requestId = _dbContext.FriendRequests
-                .FirstOrDefault(friend => friend.ReceiverId == receiver.Id && friend.SenderId == sender.Id)
-                .Id;
+            var sender = _userManager.Users.FirstOrDefault(u => u.Id == id);
+            var requestId = _context.FriendRequests.FirstOrDefault(f => f.ReceiverId == receiver.Id && f.SenderId == sender.Id).Id;
             if (receiver != null)
             {
                 receiver.FriendRequests.Add(new FriendRequest
@@ -95,38 +89,54 @@ namespace ZustSN.WebUI.Controllers
                     ReceiverId = receiver.Id,
                     Status = "Notification"
                 });
-                var receiverUser = new Friend
+
+                var receiverFriend = new Friend
                 {
                     OwnId = receiver.Id,
                     YourFriendId = sender?.Id,
                 };
-                var senderUser = new Friend
+
+                var senderFriend = new Friend
                 {
                     OwnId = sender?.Id,
                     YourFriendId = receiver.Id,
                 };
-                _dbContext.Friends?.Add(senderUser);
-                _dbContext.Friends.Add(receiverUser);
 
-                var friendRequest = await _dbContext.FriendRequests
-                    .FirstOrDefaultAsync(request => request.Id == requestId);
+                _context.Friends?.Add(senderFriend);
+                _context.Friends.Add(receiverFriend);
 
-                _dbContext.FriendRequests.Remove(friendRequest);
+                var request = await _context.FriendRequests.FirstOrDefaultAsync(r => r.Id == requestId);
+                _context.FriendRequests.Remove(request);
+
                 await _userManager.UpdateAsync(receiver);
                 await _userManager.UpdateAsync(sender);
-                await _dbContext.SaveChangesAsync();
+
+
+                await _context.SaveChangesAsync();
             }
             return RedirectToAction("Friends", "Profile");
         }
 
-        public async Task<IActionResult> UnFollow(string id)
+        public async Task<IActionResult> DeleteRequest(int id, string senderId)
         {
             try
             {
                 var current = await _userManager.GetUserAsync(HttpContext.User);
-                var friendItems = _dbContext.Friends?.Where(f => f.OwnId == id && f.YourFriendId == current.Id || f.YourFriendId == id && f.OwnId == current.Id);
-                _dbContext.Friends?.RemoveRange(friendItems);
-                await _dbContext.SaveChangesAsync();
+                var request = await _context.FriendRequests.FirstOrDefaultAsync(f => f.Id == id);
+                var sender = await _context.Users.FirstOrDefaultAsync(u => u.Id == senderId);
+
+                _context.FriendRequests.Add(new FriendRequest
+                {
+                    //Content = $"${current.UserName} declined your friend request at {DateTime.Now.ToLongTimeString()}",
+                    SenderId = current.Id,
+                    Sender = current,
+                    ReceiverId = sender?.Id,
+                    Status = "Notification"
+                });
+
+
+                _context.FriendRequests.Remove(request);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Friends", "Profile");
             }
             catch (Exception ex)
@@ -134,80 +144,99 @@ namespace ZustSN.WebUI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        public async Task<IActionResult> DeclineRequest(int id, string senderId)
+        public async Task<IActionResult> UnFollow(string id)
         {
             try
             {
                 var current = await _userManager.GetUserAsync(HttpContext.User);
-                var friendRequest = await _dbContext.FriendRequests.FirstOrDefaultAsync(friend => friend.Id == id);
-                var sender = await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == senderId);
-                _dbContext.FriendRequests.Add(new FriendRequest
-                {
-                    SenderId = current.Id,
-                    Sender = current,
-                    ReceiverId = sender?.Id,
-                    Status = "Notification"
-                });
-
-                _dbContext.FriendRequests.Remove(friendRequest);
-                await _dbContext.SaveChangesAsync();
+                var friendItems = _context.Friends?.Where(f => f.OwnId == id && f.YourFriendId == current.Id || f.YourFriendId == id && f.OwnId == current.Id);
+                _context.Friends?.RemoveRange(friendItems);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Friends", "Profile");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
-        public async Task<IActionResult> Followers()
+        public async Task<IActionResult> Setting()
         {
-            var follower = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             ViewBag.User = new
             {
-                Email = follower.Email,
-                UserName = follower.UserName,
-                ImageUrl = follower.ImageUrl
+                ImageUrl = user.ImageUrl,
+                Username = user.UserName,
+                Email = user.Email
+            };
+            return View("Setting");
+        }
+        public async Task<IActionResult> Followers()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ViewBag.User = new
+            {
+                ImageUrl = user.ImageUrl,
+                Username = user.UserName,
+                Email = user.Email
             };
             return View("Followers");
         }
-
-        public async Task<IActionResult> Users()
+        public async Task<IActionResult> Privacy()
         {
-            var current = await _userManager.GetUserAsync(HttpContext.User);
-            var friends = await _dbContext.Users.Where(friend => friend.Id != current.Id).ToListAsync();
-            var status = " ";
-            var isPending = false;
-            var isDisabled = false;
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             ViewBag.User = new
             {
-                Email = current.Email,
-                UserName = current.UserName,
-                ImageUrl = current.ImageUrl
+                ImageUrl = user.ImageUrl,
+                Username = user.UserName,
+                Email = user.Email
             };
-            var sentRequests = _dbContext.FriendRequests.Where(request => request.SenderId == current.Id && request.Status == "Pending").ToList();
-            var myRequests = _dbContext.FriendRequests.Where(request => request.ReceiverId == current.Id && request.Status == "Pending").ToList();
+            return View("Privacy");
+        }
+        public async Task<IActionResult> Friends()
+        {
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            var users = await _context.Users
+                .Where(u => u.Id != currentUser.Id)
+                .ToListAsync();
+            var status = "";
+            var isDisabled = false;
+            var isPending = false;
+            ViewBag.User = new
+            {
+                ImageUrl = currentUser.ImageUrl,
+                Username = currentUser.UserName,
+                Email = currentUser.Email
+            };
+
+            var myRequestsToOthers = _context.FriendRequests
+                .Where(r => r.SenderId == currentUser.Id && r.Status == "Pending")
+                .ToList();
+
+            var friendRequestsToMe = _context.FriendRequests
+                .Where(r => r.ReceiverId == currentUser.Id && r.Status == "Pending")
+                .ToList();
 
             ViewBag.Users = new List<object>();
-            foreach (var item in friends)
-            {
-                var myRequest = myRequests.FirstOrDefault(request => request.SenderId == item.Id);
-                var sentRequest = sentRequests.FirstOrDefault(request => request.ReceiverId == item.Id);
 
-                bool isPendingSentRequest = sentRequest != null;
-                bool isPendingMyRequest = myRequest != null;
-                var friendship = _dbContext.Friends?.FirstOrDefault(f =>
-                    (f.OwnId == current.Id && f.YourFriendId == item.Id) ||
-                    (f.OwnId == item.Id && f.YourFriendId == current.Id));
+            foreach (var item in users)
+            {
+                var requestToOther = myRequestsToOthers.FirstOrDefault(r => r.ReceiverId == item.Id);
+                var requestToMe = friendRequestsToMe.FirstOrDefault(r => r.SenderId == item.Id);
+
+                bool isPendingToOther = requestToOther != null;
+                bool isPendingToMe = requestToMe != null;
+                var friendship = _context.Friends?.FirstOrDefault(f =>
+                    (f.OwnId == currentUser.Id && f.YourFriendId == item.Id) ||
+                    (f.OwnId == item.Id && f.YourFriendId == currentUser.Id));
 
                 bool isFriend = friendship != null;
-                if (isPendingSentRequest)
+                if (isPendingToOther)
                 {
                     item.HasRequestPending = true;
                     status = "Pending";
                     isDisabled = true;
                 }
-                else if (isPendingMyRequest)
+                else if (isPendingToMe)
                 {
                     isPending = true;
                 }
@@ -215,58 +244,44 @@ namespace ZustSN.WebUI.Controllers
                 {
                     status = "Add Friend";
                 }
+
                 ViewBag.Users.Add(new
                 {
                     Id = item.Id,
+                    ImageUrl = item.ImageUrl,
                     Username = item.UserName,
                     Email = item.Email,
-                    ImageUrl = item.ImageUrl,
                     Status = status,
-                    IsFriend = isFriend,
                     IsButtonDisabled = isDisabled,
-                    IsPending = isPending
+                    IsPending = isPending,
+                    IsFriend = isFriend
                 });
             }
+
             return View("Friends");
         }
 
-        public async Task<IActionResult> Notifications()
+        public async Task<IActionResult> HelpAndSupport()
         {
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             ViewBag.User = new
             {
-                Email = currentUser.Email,
-                Username = currentUser.UserName,
-                ImageUrl = currentUser.ImageUrl
-
+                ImageUrl = user.ImageUrl,
+                Username = user.UserName,
+                Email = user.Email
+            };
+            return View("HelpAndSupport");
+        }
+        public async Task<IActionResult> Notifications()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ViewBag.User = new
+            {
+                ImageUrl = user.ImageUrl,
+                Username = user.UserName,
+                Email = user.Email
             };
             return View("Notifications");
         }
-
-        public async Task<IActionResult> Privacy()
-        {
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            ViewBag.User = new
-            {
-                Email = currentUser.Email,
-                Username = currentUser.UserName,
-                ImageUrl = currentUser.ImageUrl
-
-            };
-            return View("Privacy");
-        }
-
-        public async Task<IActionResult> Help()
-        {
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            ViewBag.User = new
-            {
-                Email = currentUser.Email,
-                Username = currentUser.UserName,
-                ImageUrl = currentUser.ImageUrl
-
-            };
-            return View("Help");
-        }     
     }
 }

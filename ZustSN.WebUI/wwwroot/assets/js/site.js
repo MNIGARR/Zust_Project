@@ -48,14 +48,14 @@ document.getElementById('video-input').addEventListener('change', function (e) {
 <form id="uploadForm" onsubmit="submitForm('post'); return false;">
     <button type="submit">Post</button>
 </form>
-function submitPost() {
-    const postContent = document.getElementById('post-content').value;
+//function submitPost() {
+//    const postContent = document.getElementById('post-content').value;
 
-    const formData = new FormData();
-    formData.append('content', postContent);
+//    const formData = new FormData();
+//    formData.append('content', postContent);
 
-    sendPostToServer(formData);
-}
+//    sendPostToServer(formData);
+//}
 
 function submitPost() {
     const postContent = document.getElementById('post-content').value;
@@ -66,7 +66,7 @@ function submitPost() {
     };
 
     // Send the data to the server
-    fetch('/posts', {
+    fetch('/Home/CreatePost', { // Make sure this endpoint is correct
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -90,6 +90,7 @@ function submitPost() {
         });
 }
 
+
 function addPostToUI(post) {
     const postsContainer = document.querySelector('.news-feed');
     const newPostElement = document.createElement('div');
@@ -108,45 +109,10 @@ function addPostToUI(post) {
 }
 
 
-function addPostToUI(postData) {
-    const postsContainer = document.querySelector('.news-feed'); // Container where you want to add the new post
-    const newPost = document.createElement('div');
-    newPost.className = 'news-feed-post';
-
-    // Assuming postData contains fields like .author, .content, .image, etc.
-    // Create the inner HTML of the post using postData
-    newPost.innerHTML = `
-        <div class="post-header d-flex justify-content-between align-items-center">
-            // ... header content using postData ...
-        </div>
-        <div class="post-body">
-            <p>${postData.content}</p>
-            <div class="post-image">
-                <img src="${postData.image}" alt="image">
-            </div>
-            // ... other post elements ...
-        </div>
-    `;
-
-    // Add the new post to the top of the posts container
-    postsContainer.prepend(newPost);
-}
 
 
-document.getElementById('uploadForm').addEventListener('submit', function (e) {
-    e.preventDefault();
 
-    const formData = new FormData(this);
-    fetch('@Url.Action("Upload", "Home")', {
-        method: 'POST',
-        body: formData
-    }).then(response => {
-        console.log('Upload successful');
-        window.location.href = '@Url.Action("Index", "Home")';
-    }).catch(error => {
-        console.error('Error:', error);
-    });
-});
+
 
 
 (document).on('click', '.friendRequestButton', function () {

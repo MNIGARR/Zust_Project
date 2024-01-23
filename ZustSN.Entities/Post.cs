@@ -11,7 +11,7 @@ namespace ZustSN.Entities
         public int Id { get; set; }
         public List<Image>? ImageUrls { get; set; }
         public List<Video>? VideoUrls { get; set; }
-        //public List<Friend>? TaggedFriends { get; set; }
+        public List<Friend>? TaggedFriends { get; set; }
         public DateTime PostDate { get; set; }
     }
 }

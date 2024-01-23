@@ -7,7 +7,7 @@ namespace ZustSN.WebUI.Models
     {
 
         [Required (ErrorMessage ="Please complete this field correctly.")]
-        public string? EmailOrUsername { get; set; }
+        public string? Username { get; set; }
         [Required]
         [DataType(DataType.Password)]
         public string? Password { get; set; }

@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 var connection = builder.Configuration.GetConnectionString("myconn");
 builder.Services.AddDbContext<ZustIdentityDBContext>(options =>
 {
-    options.UseSqlServer(connection, b => b.MigrationsAssembly("ZustSN.Entities"));
+    options.UseSqlServer(connection, b => b.MigrationsAssembly("ZustSN.WebUI"));
 });
 
 
@@ -47,7 +47,7 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute("Default", "{controller=Account}/{action=Register}/{id?}");
+    endpoints.MapControllerRoute("Default", "{controller=Account}/{action=Login}/{id?}");
     endpoints.MapHub<ChatHub>("/chathub");
 });
 app.Run();

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ZustSN.Entities.Migrations
+namespace ZustSN.WebUI.Migrations
 {
     public partial class init : Migration
     {
@@ -201,6 +201,25 @@ namespace ZustSN.Entities.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Friends",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OwnId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    YourFriendId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friends", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Friends_AspNetUsers_YourFriendId",
+                        column: x => x.YourFriendId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -248,31 +267,6 @@ namespace ZustSN.Entities.Migrations
                         principalTable: "Chats",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Friends",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    YourFriendId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PostId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Friends", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Friends_AspNetUsers_YourFriendId",
-                        column: x => x.YourFriendId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Friends_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -361,11 +355,6 @@ namespace ZustSN.Entities.Migrations
                 name: "IX_FriendRequests_SenderId",
                 table: "FriendRequests",
                 column: "SenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Friends_PostId",
-                table: "Friends",
-                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Friends_YourFriendId",

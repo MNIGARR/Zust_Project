@@ -9,10 +9,10 @@ using ZustSN.Entities;
 
 #nullable disable
 
-namespace ZustSN.Entities.Migrations
+namespace ZustSN.WebUI.Migrations
 {
     [DbContext(typeof(ZustIdentityDBContext))]
-    [Migration("20240119223552_init")]
+    [Migration("20240123220739_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,15 +162,10 @@ namespace ZustSN.Entities.Migrations
                     b.Property<string>("OwnId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<string>("YourFriendId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PostId");
 
                     b.HasIndex("YourFriendId");
 
@@ -481,10 +476,6 @@ namespace ZustSN.Entities.Migrations
 
             modelBuilder.Entity("ZustSN.Entities.Friend", b =>
                 {
-                    b.HasOne("ZustSN.Entities.Post", null)
-                        .WithMany("TaggedFriends")
-                        .HasForeignKey("PostId");
-
                     b.HasOne("ZustSN.Entities.ZustIdentityUser", "YourFriend")
                         .WithMany("Friends")
                         .HasForeignKey("YourFriendId");
@@ -545,8 +536,6 @@ namespace ZustSN.Entities.Migrations
             modelBuilder.Entity("ZustSN.Entities.Post", b =>
                 {
                     b.Navigation("ImageUrls");
-
-                    b.Navigation("TaggedFriends");
 
                     b.Navigation("VideoUrls");
                 });

@@ -40,6 +40,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Account\ForgotPassword.cshtml" />
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\Register.cshtml" />
+    <None Include="Views\Profile\Followers.cshtml" />
+    <None Include="Views\Profile\Friends.cshtml" />
+    <None Include="Views\Profile\HelpAndSupport.cshtml" />
+    <None Include="Views\Profile\MyProfile.cshtml" />
+    <None Include="Views\Profile\Notifications.cshtml" />
+    <None Include="Views\Profile\Privacy.cshtml" />
+    <None Include="Views\Profile\Setting.cshtml" />
     <None Include="wwwroot\assets\css\responsive.css.map" />
     <None Include="wwwroot\assets\css\responsive.scss" />
     <None Include="wwwroot\assets\css\style.css.map" />

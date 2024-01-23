@@ -13,8 +13,8 @@ namespace ZustSN.WebUI.Controllers
         private RoleManager<ZustIdentityRole> _roleManager;
         private SignInManager<ZustIdentityUser> _signInManager;
         private IWebHostEnvironment _webHost;
-        private ZustIdentityDBContext _dbContext;
-        private readonly IPasswordHasher<ZustIdentityUser> _passHasher;
+        private ZustIdentityDBContext _context;
+        private readonly IPasswordHasher<ZustIdentityUser> _passwordHasher;
 
         public AccountController(
            UserManager<ZustIdentityUser> userManager,
@@ -27,48 +27,10 @@ namespace ZustSN.WebUI.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            _passHasher = passwordHasher;
-            _dbContext = context;
+            _passwordHasher = passwordHasher;
+            _context = context;
             _webHost = webHost;
         }
-
-        public IActionResult Login()
-        {
-            return View("Login");
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(value => value.Errors);
-            }
-            if (ModelState.IsValid)
-            {
-                var result = await _signInManager.PasswordSignInAsync(model.EmailOrUsername, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
-                {
-                    var user = _dbContext.Users.SingleOrDefault(user => user.UserName == model.EmailOrUsername);
-                    if (user != null)
-                    {
-                        user.ConnectTime = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
-                        user.IsOnline = true;
-                        _dbContext.Users.Update(user);
-                        await _dbContext.SaveChangesAsync();
-                    }
-                    return RedirectToAction("Index", "Home");
-                }
-                ModelState.AddModelError("", "Incorrect Username or Password.");
-            }
-            return View(model);
-        }
-        public IActionResult ForgotPassword()
-        {
-            return View("ForgotPassword");
-        }
-
-
         public IActionResult Register()
         {
             return View("Register");
@@ -98,28 +60,74 @@ namespace ZustSN.WebUI.Controllers
                 {
                     if (!await _roleManager.RoleExistsAsync("Admin"))
                     {
-                        ZustIdentityRole role = new ZustIdentityRole{ Name = "Admin" };
+                        ZustIdentityRole role = new ZustIdentityRole
+                        {
+                            Name = "Admin"
+                        };
+
                         IdentityResult roleResult = await _roleManager.CreateAsync(role);
                         if (!roleResult.Succeeded)
                         {
-                            ModelState.AddModelError("", "Can not added as Admin!");
+                            ModelState.AddModelError("", "We can not add the role!");
                             return View(model);
                         }
                     }
+
                     _userManager.AddToRoleAsync(user, "Admin").Wait();
                     return RedirectToAction("Login", "Account");
+
                 }
+            }
+
+            return View(model);
+        }
+
+        public IActionResult Login()
+        {
+            return View("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+            }
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+                if (result.Succeeded)
+                {
+                    var user = _context.Users.SingleOrDefault(u => u.UserName == model.Username);
+                    if (user != null)
+                    {
+                        user.ConnectTime = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
+                        user.IsOnline = true;
+                        _context.Users.Update(user);
+                        await _context.SaveChangesAsync();
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError("", "Invalid Login");
             }
             return View(model);
         }
+
         public async Task<IActionResult> LogOut()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-            user.IsOnline = false;
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
+            currentUser.IsOnline = false;
+            _context.Users.Update(currentUser);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Login", "Account");
-        }      
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
     }
 }
